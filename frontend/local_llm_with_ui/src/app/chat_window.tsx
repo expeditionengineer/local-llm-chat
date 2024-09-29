@@ -4,20 +4,38 @@ import ollama from 'ollama/browser'
 
 const ChatWindow: React.FC = () => {
   const [inputValue, setInputValue] = useState(''); // Store the current input value
-  const [messages, setMessages] = useState<string[]>([]); // Store all messages
+  
+  interface Message {
+    message: string;
+    isLLMMessage: boolean;
+  }
+
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  //const [messages, setMessages] = useState<string[]>([]); // Store all messages
 
   // Handle key press in the input field
   const handleKeyPress = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault(); // Prevents the default behavior of Enter key
       if (inputValue.trim() !== '') { // Only add non-empty messages
-        setMessages([...messages, inputValue]); // Add the message to the list
+        setMessages([...messages, {
+          message: inputValue,
+          isLLMMessage: false,
+        }]); // Add the message to the list 
+        setInputValue(''); // Clear the input field
+        
         const response = await ollama.chat({
           model: 'llama3.2',
           messages: [{ role: 'user', content: inputValue }],
         });
-        setMessages([...messages, response.message.content]);
-        setInputValue(''); // Clear the input field
+        setMessages([...messages, {
+          message: inputValue,
+          isLLMMessage: false,
+        }, {
+          message: response.message.content,
+          isLLMMessage: true,
+        }]);
       }
     }
   };
@@ -29,9 +47,12 @@ const ChatWindow: React.FC = () => {
           <h2>Local LLM Chatbot</h2>
         </div>
           {messages.map((message, index) => (
-            <div key={index} style={styles.message}>
-              {message}
-            </div>
+  // The outer parentheses correctly wrap the return value of the map function
+          message.isLLMMessage ? (
+          <div key={index} style={styles.messageLLM}>{message.message}</div>
+          ) : (
+          <div key={index} style={styles.messageUser}>{message.message}</div>
+          )
           ))}
         <div style={styles.chatArea} id="chatWindow">
         </div>
@@ -50,6 +71,17 @@ const ChatWindow: React.FC = () => {
 };
 
 const styles = {
+  messageLLM: {
+    marginBottom: '10px',
+    padding: '8px',
+    backgroundColor: '#f1f1f1',
+    borderRadius: '5px',
+    maxWidth: '80%',
+    wordWrap: 'break-word',
+    color: 'black',
+    border: 'solid',
+    backgroundColor: '#9e9e9e',
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -96,7 +128,7 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
   },
-  message: {
+  messageUser: {
     marginBottom: '10px',
     padding: '8px',
     backgroundColor: '#f1f1f1',
