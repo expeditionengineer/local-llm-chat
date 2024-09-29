@@ -1,5 +1,7 @@
 'use client'
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+
 import ollama from 'ollama/browser'
 
 const ChatWindow: React.FC = () => {
@@ -49,7 +51,9 @@ const ChatWindow: React.FC = () => {
           {messages.map((message, index) => (
   // The outer parentheses correctly wrap the return value of the map function
           message.isLLMMessage ? (
-          <div key={index} style={styles.messageLLM}>{message.message}</div>
+          <div key={index} style={styles.messageLLM}>
+            <ReactMarkdown>{message.message}</ReactMarkdown>
+          </div>
           ) : (
           <div key={index} style={styles.messageUser}>{message.message}</div>
           )
