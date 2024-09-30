@@ -11,8 +11,8 @@ const Overlay: React.FC = () => {
         <h1 style={{fontSize: '25px'}}>Apps</h1>
       </div>
       <div style={{display: 'flex', justifyContent: 'center'}}>
-        <OverlayTile routeHref={'Hi'} tileName={'LLM UI'} /> 
-        <OverlayTile routeHref={'Hi'} tileName={'Weather app'} />  
+        <OverlayTile routeHref={'chat'} tileName={'LLM UI'} /> 
+        <OverlayTile routeHref={'weather_app'} tileName={'Weather app'} />  
       </div>
     </div>
   )

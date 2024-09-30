@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 interface Props {
   routeHref: string;
@@ -8,7 +9,9 @@ interface Props {
 const OverlayTile: React.FC<Props> = ({ routeHref, tileName }) => {
   return (
     <div style={{padding: '50px', border: 'solid'}}>
-      {tileName}
+      <Link href={routeHref}> 
+        {tileName}
+      </Link>
     </div>
   );
 }
